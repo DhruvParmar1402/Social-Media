@@ -3,15 +3,11 @@ package com.socialmeadia.socialmedia.Repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.DTO.RequestDTO;
 import com.socialmeadia.socialmedia.Entity.RequestEntity;
-import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.w3c.dom.Attr;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +25,7 @@ public class RequestRepository {
     }
 
     public RequestDTO findRequest(String userName, String sendTo) {
-        RequestEntity request = repo.load(RequestEntity.class, userName, sendTo);
-
+        RequestEntity request = repo.load(RequestEntity.class, sendTo ,userName);
         return request==null?null:mapper.map(request, RequestDTO.class);
     }
 
@@ -38,7 +33,15 @@ public class RequestRepository {
         repo.delete(mapper.map(requestDTO, RequestEntity.class));
     }
 
-    public List<RequestDTO> getAll(String userName, Map<String, AttributeValue> startKey, int pageSize) {
+    public List<RequestDTO> getAll(String userName, String lastEvaluatedKey, int pageSize) {
+
+        Map<String ,AttributeValue> startKey=new HashMap<>();
+        if(lastEvaluatedKey!=null)
+        {
+            startKey.put("sentTo",new AttributeValue().withS(userName));
+            startKey.put("sentBy",new AttributeValue().withS(lastEvaluatedKey));
+        }
+
         Map<String , AttributeValue> eav=new HashMap<>();
         eav.put(":sentTo",new AttributeValue().withS(userName));
 

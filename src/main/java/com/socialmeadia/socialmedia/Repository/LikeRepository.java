@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,13 @@ public class LikeRepository {
         repo.delete(mapper.map(like, LikeEntity.class));
     }
 
-    public List<LikeDTO> getAllLikesByUserId(String userName,Map<String , AttributeValue> startKey,int pageSize) {
+    public List<LikeDTO> getAllLikesByUserId(String userName,String lastEvaluatedKey,int pageSize) {
+        Map<String , AttributeValue> startKey=new HashMap<>();
+        if(lastEvaluatedKey!=null)
+        {
+            startKey.put("userId",new AttributeValue().withS(userName));
+            startKey.put("postId",new AttributeValue().withS(lastEvaluatedKey));
+        }
 
         Map<String , AttributeValue> eav=new HashMap<>();
         eav.put(":userId",new AttributeValue().withS(userName));
@@ -56,7 +63,16 @@ public class LikeRepository {
         return likes==null?null:likes.stream().map((entity)-> mapper.map(entity, LikeDTO.class)).toList();
     }
 
-    public List<LikeDTO> getAllLikesByPostId(String postId,Map<String, AttributeValue> startKey,int pageSize) {
+    public List<LikeDTO> getAllLikesByPostId(String postId,String lastEvaluatedKey,int pageSize) {
+
+        Map<String , AttributeValue> startKey=new HashMap<>();
+
+        if(lastEvaluatedKey!=null)
+        {
+            startKey.put("postId",new AttributeValue().withS(postId));
+            startKey.put("userId",new AttributeValue().withS(lastEvaluatedKey));
+        }
+
         Map<String , AttributeValue> eav=new HashMap<>();
         eav.put(":postId",new AttributeValue().withS(postId));
 
@@ -75,5 +91,27 @@ public class LikeRepository {
         List<LikeEntity> likes=repo.queryPage(LikeEntity.class,expression).getResults();
 
         return likes==null?null:likes.stream().map((entity)-> mapper.map(entity, LikeDTO.class)).toList();
+    }
+
+    public List<LikeEntity> getAllByPostId(String postId) {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":postId", new AttributeValue().withS(postId));
+
+        DynamoDBQueryExpression<LikeEntity> queryExpression = new DynamoDBQueryExpression<LikeEntity>()
+                .withConsistentRead(false)
+                .withKeyConditionExpression("postId = :postId")
+                .withExpressionAttributeValues(eav);
+
+        return repo.query(LikeEntity.class, queryExpression);
+    }
+
+
+    public void unlikePostById(String postId) {
+
+        List<LikeEntity> likes = getAllByPostId(postId);
+
+        for (LikeEntity like : likes) {
+            repo.delete(like);
+        }
     }
 }

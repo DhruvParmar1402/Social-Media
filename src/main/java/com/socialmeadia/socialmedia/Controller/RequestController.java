@@ -8,6 +8,7 @@ import com.socialmeadia.socialmedia.Service.RequestService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class RequestController {
     private MessageSourceImpl messageSource;
 
     @PostMapping
-    public ResponseEntity<?> sendRequest(@RequestBody RequestDTO request) {
+    public ResponseEntity<?> sendRequest(@Valid @RequestBody RequestDTO request) {
         ResponseHandler<Object> response;
         try {
             requestService.save(request);
@@ -33,7 +34,7 @@ public class RequestController {
         }
         catch (AlreadyFriend e)
         {
-            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.OK, true);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.OK, false);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         catch (EntityNotFound e)
@@ -42,8 +43,8 @@ public class RequestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         catch (Exception e) {
-            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -55,8 +56,8 @@ public class RequestController {
             response = new ResponseHandler<>(null, messageSource.getMessage("request.deleted.successfully"), HttpStatus.OK, true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -65,10 +66,11 @@ public class RequestController {
         ResponseHandler<PaginationResponse> response;
         try {
             PaginationResponse page = requestService.getAll(pageSize, lastEvaluatedKey);
+            response = new ResponseHandler<>(page, messageSource.getMessage("request.fetched.successfully"), HttpStatus.OK, true);
             return ResponseEntity.status(HttpStatus.OK).body(page);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -80,8 +82,8 @@ public class RequestController {
             response = new ResponseHandler<>(null, messageSource.getMessage("request.accepted.successfully"), HttpStatus.OK, true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }

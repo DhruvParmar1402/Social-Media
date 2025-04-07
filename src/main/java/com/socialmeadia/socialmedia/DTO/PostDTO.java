@@ -13,14 +13,10 @@ import java.util.Date;
 @Getter
 @Setter
 
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDTO {
 
-    @Null
     private String postId;
 
-    @Null
     private String userName;
 
     @NotBlank(message = "{post.imageName.blank}")
@@ -32,12 +28,9 @@ public class PostDTO {
     @NotBlank(message = "{post.description.blank}")
     private String description;
 
-    @Null
     private Integer numberOfLikes=0;
 
-    @Null
     private Integer numberOfComments=0;
 
-    @Null
     private Date createdAt=new Date();
 }

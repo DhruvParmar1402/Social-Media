@@ -7,7 +7,7 @@ import com.socialmeadia.socialmedia.Service.CommentService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,20 +16,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/comment")
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+    private final MessageSourceImpl messageSource;
 
-    @Autowired
-    private MessageSourceImpl messageSource;
+    public CommentController(CommentService commentService, MessageSourceImpl messageSource) {
+        this.commentService = commentService;
+        this.messageSource = messageSource;
+    }
+
 
     @PostMapping
-    public ResponseEntity<?> addComment (@RequestBody CommentDTO commentDTO)
+    public ResponseEntity<?> addComment (@Valid @RequestBody CommentDTO commentDTO)
     {
         ResponseHandler<Object>response;
         try
         {
-            CommentDTO comment=commentService.save(commentDTO);
-            response=new ResponseHandler<>(comment,messageSource.getMessage("comment.post.success"), HttpStatus.OK,true);
+            CommentDTO savedComment =commentService.save(commentDTO);
+            response=new ResponseHandler<>(savedComment,messageSource.getMessage("comment.post.success"), HttpStatus.OK,true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         catch (EntityNotFound e)
@@ -60,8 +63,8 @@ public class CommentController {
         }
         catch (Exception e)
         {
-            response=new ResponseHandler<>(null,e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR,false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response=new ResponseHandler<>(null,e.getMessage(), HttpStatus.BAD_REQUEST,false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -76,8 +79,8 @@ public class CommentController {
         }
         catch (Exception e)
         {
-            response=new ResponseHandler<>(null,e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR,false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response=new ResponseHandler<>(null,e.getMessage(), HttpStatus.BAD_REQUEST,false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -93,8 +96,8 @@ public class CommentController {
         }
         catch (Exception e)
         {
-            response=new ResponseHandler<>(null,e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR,false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response=new ResponseHandler<>(null,e.getMessage(), HttpStatus.BAD_REQUEST,false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }

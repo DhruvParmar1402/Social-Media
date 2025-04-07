@@ -10,9 +10,7 @@ import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RequestService {
@@ -44,30 +42,25 @@ public class RequestService {
         }
 
         request.setSentBy(userName);
-        System.out.println(request);
         requestRepository.save(request);
     }
 
     public void delete(String sendTo) {
         String userName=authenticatedUserProvider.getUserName();
         RequestDTO request=requestRepository.findRequest(userName,sendTo);
-        requestRepository.delete(request);
+        if (request != null) {
+            requestRepository.delete(request);
+        }
     }
 
     public PaginationResponse getAll(int pageSize, String lastEvaluatedKey) {
         String userName=authenticatedUserProvider.getUserName();
 
-        Map<String ,AttributeValue> startKey=new HashMap<>();
-        if(lastEvaluatedKey!=null)
-        {
-            startKey.put("sentTo",new AttributeValue().withS(userName));
-            startKey.put("sentBy",new AttributeValue().withS(lastEvaluatedKey));
-        }
         
-        List<RequestDTO> list=requestRepository.getAll(userName,startKey,pageSize);
+        List<RequestDTO> list=requestRepository.getAll(userName,lastEvaluatedKey,pageSize);
 
         boolean hasMore=!(list.size()<pageSize);
-        lastEvaluatedKey=hasMore?list.getLast().getSentBy():null;
+        lastEvaluatedKey=hasMore?list.get(list.size() - 1).getSentBy():null;
 
         return new PaginationResponse(list,lastEvaluatedKey,pageSize,hasMore);
     }
@@ -75,16 +68,12 @@ public class RequestService {
     public void acceptRequest(String sendBy) throws EntityNotFound {
         String userName=authenticatedUserProvider.getUserName();
 
-        RequestDTO request=requestRepository.findRequest(userName,sendBy);
+        RequestDTO request=requestRepository.findRequest(sendBy,userName);
 
         if (request==null)
         {
             throw new EntityNotFound(messageSource.getMessage("request.notFound"));
         }
-
-//        RequestDTO request=new RequestDTO();
-//        request.setSentTo(userName);
-//        request.setSentBy(sendBy);
 
         requestRepository.delete(request);
         friendService.add(userName,sendBy);

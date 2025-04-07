@@ -27,18 +27,19 @@ public class UserController {
     public ResponseEntity<?> updateUser(@Validated(UserValidations.Register.class) @RequestBody UserDTO userDTO) {
         ResponseHandler<UserDTO> response;
         try {
-            response = new ResponseHandler<>(userService.updateUser(userDTO), messageSource.getMessage("user.update.success"), HttpStatus.OK, true);
+            UserDTO user=userService.updateUser(userDTO);
+            response = new ResponseHandler<>(user, messageSource.getMessage("user.update.success"), HttpStatus.OK, true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         catch (EntityNotFound e)
         {
-            response=new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.NOT_FOUND,false);
+            response=new ResponseHandler<>(null, e.getMessage(), HttpStatus.NOT_FOUND,false);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         catch (Exception e)
         {
-            response=new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR,false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response=new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST,false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -51,11 +52,11 @@ public class UserController {
             response=new ResponseHandler<>(null,messageSource.getMessage("user.delete.success"),HttpStatus.OK,true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFound e) {
-            response=new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.NOT_FOUND,false);
+            response=new ResponseHandler<>(null, e.getMessage(), HttpStatus.NOT_FOUND,false);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            response=new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR,false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response=new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST,false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }

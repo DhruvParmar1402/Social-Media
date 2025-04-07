@@ -26,42 +26,43 @@ public class FeedService {
 
     public List<PostDTO> getAllFeeds() throws EntityNotFound {
         String lastEvaluatedKey = null;
-        boolean hasMore = false;
-        PaginationResponse response = null;
         List<FriendDTO> friends = new ArrayList<>();
 
         do {
-            response = friendService.getAll(5, lastEvaluatedKey);
+            PaginationResponse response = friendService.getAll(5, lastEvaluatedKey);
             List<FriendDTO> list = (List<FriendDTO>) response.getData();
 
-            friends.addAll(list);
+            if (list == null || list.isEmpty()) {
+                break;
+            }
 
-            lastEvaluatedKey = list.getLast().getFriendId();
-            hasMore = response.isHasMore();
-        } while (hasMore);
+            friends.addAll(list);
+            lastEvaluatedKey = list.get(list.size() - 1).getFriendId();
+        } while (lastEvaluatedKey != null);
+
+        if (friends.isEmpty()) {
+            return new ArrayList<>();
+        }
 
         List<PostDTO> posts = new ArrayList<>();
 
         for (FriendDTO friend : friends) {
             String friendUserName = friend.getFriendId();
             lastEvaluatedKey = null;
-            response = null;
-            hasMore = false;
 
             do {
-                response = postService.getAll(5, lastEvaluatedKey, null, friendUserName);
+                PaginationResponse response = postService.getAll(5, lastEvaluatedKey, null, friendUserName);
                 List<PostDTO> list = (List<PostDTO>) response.getData();
 
-                if (list.size() == 0) {
+                if (list == null || list.isEmpty()) {
                     break;
                 }
 
                 posts.addAll(list);
-
-                lastEvaluatedKey = list.getLast().getPostId();
-                hasMore = response.isHasMore();
-            } while (response != null && hasMore);
+                lastEvaluatedKey = list.get(list.size() - 1).getPostId();
+            } while (lastEvaluatedKey != null);
         }
+
         Collections.shuffle(posts);
         return posts;
     }

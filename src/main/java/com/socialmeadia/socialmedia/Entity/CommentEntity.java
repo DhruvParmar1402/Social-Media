@@ -30,5 +30,5 @@ public class CommentEntity {
     @DynamoDBAttribute(attributeName = "description")
     private String description;
 
-    private Date createdAt=new Date();
+    private Date createdAt;
 }

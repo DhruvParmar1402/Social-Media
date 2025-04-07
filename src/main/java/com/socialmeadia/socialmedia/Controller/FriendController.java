@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/friends")
 public class FriendController {
 
-    @Autowired
-    private MessageSourceImpl messageSource;
+    private final MessageSourceImpl messageSource;
+    private final FriendService friendService;
 
-    @Autowired
-    private FriendService friendService;
+    public FriendController(MessageSourceImpl messageSource, FriendService friendService) {
+        this.messageSource = messageSource;
+        this.friendService = friendService;
+    }
 
     @GetMapping
     public ResponseEntity<?> getAll(@RequestParam(defaultValue = "5") int pageSize, @RequestParam(required = false) String lastEvaluatedKey)
@@ -29,8 +31,8 @@ public class FriendController {
         }
         catch (Exception e)
         {
-            response=new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR,false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response=new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST,false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -40,14 +42,15 @@ public class FriendController {
         ResponseHandler<Object> response;
         try
         {
+            System.out.println(userName);
             friendService.delete(userName);
             response=new ResponseHandler<>(null,messageSource.getMessage("friend.deleted.success"),HttpStatus.OK,true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         catch (Exception e)
         {
-            response=new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR,false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response=new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST,false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 

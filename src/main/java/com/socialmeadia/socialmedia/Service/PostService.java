@@ -1,6 +1,5 @@
 package com.socialmeadia.socialmedia.Service;
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.socialmeadia.socialmedia.DTO.DateRequestDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.DTO.UserDTO;
@@ -9,14 +8,14 @@ import com.socialmeadia.socialmedia.Exception.UnAuthorized;
 import com.socialmeadia.socialmedia.Repository.PostRepository;
 import com.socialmeadia.socialmedia.Repository.UserRepository;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
+import com.socialmeadia.socialmedia.Util.FileStorageService;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PostService {
@@ -28,17 +27,38 @@ public class PostService {
     private AuthenticatedUserProvider authenticatedUserProvider;
 
     @Autowired
+    private FileStorageService fileStorageService;
+
+    @Autowired
     private UserRepository userRepository;
 
-    public void save(PostDTO post) throws EntityNotFound {
+    @Autowired
+    private CommentService commentService;
+
+
+    private final LikeService likeService;
+
+    public PostService(@Lazy LikeService likeService) {
+        this.likeService = likeService;
+    }
+
+    public void save(PostDTO post) throws Exception {
         String userName = authenticatedUserProvider.getUserName();
-        if (userRepository.findUserByUserName(userName) == null) {
-            throw new EntityNotFound("user.notExists");
-        }
-        post.setUserName(userName);
-        postRepository.save(post);
 
         UserDTO user = userRepository.findUserByUserName(userName);
+        if (user == null) {
+            throw new EntityNotFound("user.notExists");
+        }
+
+        post.setUserName(userName);
+
+        if (post.getImagePath() != null && post.getImageName() != null) {
+            fileStorageService.storeAvatar(userName, post.getImagePath(), post.getImageName());
+            post.setImagePath(userName);
+        }
+
+        postRepository.save(post);
+
         user.setPostCount(user.getPostCount() + 1);
         userRepository.save(user);
     }
@@ -72,53 +92,48 @@ public class PostService {
         if (!existingPostDTO.getUserName().equals(userName)) {
             throw new UnAuthorized("unAuthorized");
         }
+
         postRepository.delete(existingPostDTO);
 
         UserDTO user = userRepository.findUserByUserName(userName);
         user.setPostCount(user.getPostCount() - 1);
         userRepository.save(user);
+
+        likeService.unLikePostByLikeId(postId);
+        commentService.deleteCommentByPostId(postId);
     }
 
     public PaginationResponse getAll(int pageSize, String lastEvaluatedKey, DateRequestDTO dateRequestDTO, String friendUsername) throws EntityNotFound {
-        String userName = friendUsername == null || friendUsername.isBlank() ? authenticatedUserProvider.getUserName() : friendUsername;
-
-        Map<String, AttributeValue> startKey = null;
-        List<PostDTO> postList = new ArrayList<>();
-        boolean hasMore = false;
-        String nextLastEvaluatedKey = null;
+        String userName = (friendUsername == null || friendUsername.isBlank())
+                ? authenticatedUserProvider.getUserName()
+                : friendUsername;
 
         if (userRepository.findUserByUserName(userName) == null) {
             throw new EntityNotFound("user.notExists");
         }
 
+        List<PostDTO> postList = new ArrayList<>();
+        boolean hasMore;
+        String nextLastEvaluatedKey = lastEvaluatedKey;
+
         do {
+            List<PostDTO> result = postRepository.getAll(userName, nextLastEvaluatedKey, pageSize - postList.size(), dateRequestDTO);
 
-            if (lastEvaluatedKey != null && !lastEvaluatedKey.isEmpty()) {
-
-                startKey = new HashMap<>();
-                startKey.put("userName", new AttributeValue().withS(userName));
-                startKey.put("postId", new AttributeValue().withS(lastEvaluatedKey));
-            }
-
-            List<PostDTO> result = postRepository.getAll(userName, startKey, pageSize - postList.size(), dateRequestDTO);
-
-            if (result.isEmpty()) {
-                break;
-            }
-            if (result.getLast() != null) {
-                nextLastEvaluatedKey = result.getLast().getPostId();
-            }
+            if (result.isEmpty()) break;
 
             postList.addAll(result);
-            hasMore = nextLastEvaluatedKey != null;
-            lastEvaluatedKey = nextLastEvaluatedKey;
 
-        } while (pageSize > postList.size() && hasMore);
+            hasMore = result.size() == (pageSize - postList.size());
+            nextLastEvaluatedKey = result.get(result.size() - 1).getPostId();
 
-        return new PaginationResponse(postList, lastEvaluatedKey, pageSize, hasMore);
+        } while (postList.size() < pageSize && hasMore);
+
+        return new PaginationResponse(postList, nextLastEvaluatedKey, pageSize, postList.size() == pageSize);
+
     }
 
     public PostDTO getPostById(String postId) {
         return postRepository.findPostById(postId);
     }
 }
+

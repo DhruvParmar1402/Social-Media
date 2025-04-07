@@ -1,7 +1,7 @@
 package com.socialmeadia.socialmedia.Config;
 
 import com.socialmeadia.socialmedia.Filter.JWTFilter;
-import com.socialmeadia.socialmedia.Service.UserDetailsProvider;
+import com.socialmeadia.socialmedia.Util.UserDetailsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

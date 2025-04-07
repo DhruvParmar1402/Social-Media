@@ -1,6 +1,5 @@
 package com.socialmeadia.socialmedia.Service;
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.socialmeadia.socialmedia.DTO.CommentDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
@@ -11,14 +10,11 @@ import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CommentService {
-    
+
     @Autowired
     private CommentRepository commentRepository;
 
@@ -28,6 +24,7 @@ public class CommentService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
     private MessageSourceImpl messageSource;
 
 
@@ -46,6 +43,7 @@ public class CommentService {
 
         post.setNumberOfComments(post.getNumberOfComments()+1);
         postRepository.save(post);
+
         return commentDTO;
     }
 
@@ -56,32 +54,17 @@ public class CommentService {
             throw new EntityNotFound(messageSource.getMessage("post.notExists"));
         }
 
-        Map<String, AttributeValue> startKey=new HashMap<>();
-        if(lastEvaluatedKey!=null)
-        {
-            startKey.put("postId",new AttributeValue().withS(postId));
-            startKey.put("commentId",new AttributeValue().withS(lastEvaluatedKey));
-        }
-
-        List<CommentDTO> list=commentRepository.findCommentByPost(pageSize,startKey,postId);
+        List<CommentDTO> list=commentRepository.findCommentByPost(pageSize,lastEvaluatedKey,postId);
         boolean hasMore=!(list.size()<pageSize);
-        lastEvaluatedKey=hasMore?list.getLast().getCommentId():null;
+        lastEvaluatedKey = hasMore ? list.get(list.size() - 1).getCommentId() : null;
         return new PaginationResponse(list,lastEvaluatedKey,pageSize,hasMore);
     }
 
     public PaginationResponse findCommentByUser(int pageSize, String lastEvaluatedKey) {
         String userId=authenticatedUserProvider.getUserName();
-        Map<String, AttributeValue> startKey=new HashMap<>();
-
-        if(lastEvaluatedKey!=null)
-        {
-            startKey.put("userId",new AttributeValue().withS(userId));
-            startKey.put("commentId",new AttributeValue().withS(lastEvaluatedKey));
-        }
-
-        List<CommentDTO> list=commentRepository.findCommentByUser(pageSize,startKey,userId);
+        List<CommentDTO> list=commentRepository.findCommentByUser(pageSize,lastEvaluatedKey,userId);
         boolean hasMore=!(list.size()<pageSize);
-        lastEvaluatedKey=hasMore?list.getLast().getCommentId():null;
+        lastEvaluatedKey = hasMore ? list.get(list.size() - 1).getCommentId() : null;
         return new PaginationResponse(list,lastEvaluatedKey,pageSize,hasMore);
     }
 
@@ -95,5 +78,9 @@ public class CommentService {
         PostDTO postDTO=postRepository.findPostById(postId);
         postDTO.setNumberOfComments(postDTO.getNumberOfComments()-1);
         postRepository.save(postDTO);
+    }
+
+    public void deleteCommentByPostId(String postId) {
+        commentRepository.deleteCommentByPostId(postId);
     }
 }

@@ -16,7 +16,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     @NotBlank(message = "{user.username.notBlank}",groups = {UserValidations.Register.class, UserValidations.Login.class})
@@ -34,10 +33,8 @@ public class UserDTO {
     @NotBlank(message = "{user.password.blank}", groups = {UserValidations.Register.class, UserValidations.Login.class, UserValidations.Update.class})
     private String password;
 
-    @Null
     private Integer postCount=0;
 
-    @Null
     private Integer friendCount=0;
 
     @NotBlank(message = "{user.bio.blank}",groups = {UserValidations.Register.class, UserValidations.Update.class})
@@ -49,7 +46,7 @@ public class UserDTO {
     @Positive(message = "{user.age.nonPositive}", groups = {UserValidations.Register.class, UserValidations.Update.class})
     private int age;
 
-    @Null
-    private Date createdAt;
+
+    private Date createdAt=new Date();
 
 }

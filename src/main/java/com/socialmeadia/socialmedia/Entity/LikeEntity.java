@@ -26,5 +26,5 @@ public class LikeEntity {
     @DynamoDBAttribute(attributeName = "userId")
     private String userId;
 
-    private Date likeDate=new Date();
+    private Date likeDate;
 }

@@ -22,14 +22,11 @@ public class RequestEntity {
 
     @DynamoDBAttribute(attributeName = "sentBy")
     @DynamoDBRangeKey(attributeName = "sentBy")
-//    @DynamoDBIndexHashKey(globalSecondaryIndexName = "sentBy-index",attributeName = "sentBy")
-    private String sentBy;
 
-    @DynamoDBAttribute(attributeName = "status")
-    private String status;
+    private String sentBy;
 
     @DynamoDBTypeConverted(converter = DateConverter.class)
     @DynamoDBAttribute(attributeName = "sentDate")
-    private Date sentDate=new Date();
+    private Date sentDate;
 
 }

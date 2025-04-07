@@ -42,6 +42,6 @@ public class PostEntity {
 
     @DynamoDBAttribute(attributeName = "createdAt")
     @DynamoDBTypeConverted(converter = DateConverter.class)
-    private Date createdAt = new Date();
+    private Date createdAt;
 
 }

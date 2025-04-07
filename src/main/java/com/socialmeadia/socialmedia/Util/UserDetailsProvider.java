@@ -1,4 +1,4 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Util;
 
 import com.socialmeadia.socialmedia.Repository.UserRepository;
 import com.socialmeadia.socialmedia.DTO.UserDTO;

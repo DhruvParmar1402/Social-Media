@@ -30,14 +30,14 @@ public class PostController {
         ResponseHandler<Object> response;
         try {
             postService.save(post);
-            response = new ResponseHandler<>(null, messageSource.getMessage("post.save.success"), HttpStatus.OK, false);
+            response = new ResponseHandler<>(null, messageSource.getMessage("post.save.success"), HttpStatus.OK, true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFound e) {
             response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.NOT_FOUND, false);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -53,10 +53,10 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (UnAuthorized e) {
             response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.UNAUTHORIZED, false);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -68,14 +68,14 @@ public class PostController {
             response = new ResponseHandler<>(null, messageSource.getMessage("post.delete.success"), HttpStatus.OK, false);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (EntityNotFound e) {
-            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.NOT_FOUND, false);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.NOT_FOUND, false);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (UnAuthorized e) {
-            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.UNAUTHORIZED, false);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.UNAUTHORIZED, false);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -89,8 +89,8 @@ public class PostController {
             response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.NOT_FOUND, false);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -104,8 +104,8 @@ public class PostController {
             response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.NOT_FOUND, false);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, false);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response = new ResponseHandler<>(null, messageSource.getMessage(e.getMessage()), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }

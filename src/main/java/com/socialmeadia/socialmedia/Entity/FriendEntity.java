@@ -20,8 +20,7 @@ public class FriendEntity {
     private String userId;
 
     @DynamoDBRangeKey(attributeName = "friendId")
-//    @DynamoDBIndexHashKey(globalSecondaryIndexName = "friendId-index",attributeName = "friendId")
     private String friendId;
 
-    private Date dateOfFriendship=new Date();
+    private Date dateOfFriendship;
 }

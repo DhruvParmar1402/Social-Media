@@ -48,6 +48,6 @@ public class UserEntity {
     @DynamoDBAttribute(attributeName = "age")
     private int age;
 
-    private Date createdAt=new Date();
+    private Date createdAt;
 
 }

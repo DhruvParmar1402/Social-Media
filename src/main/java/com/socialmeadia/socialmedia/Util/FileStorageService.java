@@ -20,7 +20,7 @@ public class FileStorageService {
 
         Path sourceFile = Paths.get(sourcePath, avatarName);
         if (!Files.exists(sourceFile)) {
-            throw new IOException("Avatar file does not exist at: " + sourceFile.toString());
+            throw new IOException("Avatar/Post file does not exist at: " + sourceFile.toString());
         }
 
         Path destinationFile = userFolder.resolve(avatarName);

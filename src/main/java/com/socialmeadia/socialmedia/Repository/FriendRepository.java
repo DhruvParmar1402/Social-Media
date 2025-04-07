@@ -6,7 +6,6 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.socialmeadia.socialmedia.DTO.FriendDTO;
 import com.socialmeadia.socialmedia.Entity.FriendEntity;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.bytebuddy.description.type.TypeDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +29,14 @@ public class FriendRepository {
         return friend==null?null:mapper.map(friend,FriendDTO.class);
     }
 
-    public List<FriendDTO> getAll(String userName, int pageSize, Map<String, AttributeValue> startKey) {
+    public List<FriendDTO> getAll(String userName, int pageSize, String lastEvaluatedKey) {
+        Map<String , AttributeValue> startKey=new HashMap<>();
+        if(lastEvaluatedKey!=null && !lastEvaluatedKey.isBlank())
+        {
+            startKey.put("userId",new AttributeValue().withS(userName));
+            startKey.put("friendId",new AttributeValue().withS(lastEvaluatedKey));
+        }
+
         Map<String, AttributeValue> eav=new HashMap<>();
         eav.put(":userId",new AttributeValue().withS(userName));
 

@@ -6,7 +6,6 @@ import com.socialmeadia.socialmedia.Exception.UserAlreadyExists;
 import com.socialmeadia.socialmedia.Service.AuthService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,11 +19,14 @@ import com.socialmeadia.socialmedia.Groups.UserValidations;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService service;
+    private final AuthService service;
+    private final MessageSourceImpl messageSource;
 
-    @Autowired
-    private MessageSourceImpl messageSource;
+    public AuthController(AuthService service, MessageSourceImpl messageSource) {
+        this.service = service;
+        this.messageSource = messageSource;
+    }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser (@Validated(UserValidations.Register.class) @RequestBody UserDTO userDTO)
@@ -49,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> LoginUser(@Validated(UserValidations.Login.class) @RequestBody UserDTO userDTO)
+    public ResponseEntity<?> loginUser(@Validated(UserValidations.Login.class) @RequestBody UserDTO userDTO)
     {
         ResponseHandler<String> response;
         try {

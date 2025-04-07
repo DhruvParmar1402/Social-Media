@@ -17,7 +17,6 @@ public class CommentDTO {
     @NotBlank(message = "{comment.postId.blank}")
     private String postId;
 
-    @NotBlank(message = "{comment.userId.blank}")
     private String userId;
 
     @NotBlank(message = "{comment.description.blank}")

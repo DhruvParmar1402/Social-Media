@@ -1,20 +1,17 @@
 package com.socialmeadia.socialmedia.Service;
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.socialmeadia.socialmedia.DTO.LikeDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
-import com.socialmeadia.socialmedia.DTO.RequestDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Repository.LikeRepository;
+import com.socialmeadia.socialmedia.Repository.PostRepository;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class LikeService {
@@ -26,79 +23,78 @@ public class LikeService {
     private PostService postService;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private MessageSourceImpl messageSource;
 
     @Autowired
     private AuthenticatedUserProvider authenticatedUserProvider;
 
-    public void likePost(String postId) throws EntityNotFound {
-        PostDTO post=postService.getPostById(postId);
-
-        if(post==null)
-        {
+    public void likePost(String postId) throws Exception {
+        PostDTO post = postService.getPostById(postId);
+        if (post == null) {
             throw new EntityNotFound(messageSource.getMessage("post.notExists"));
         }
 
-        LikeDTO like=new LikeDTO();
-        like.setUserId(authenticatedUserProvider.getUserName());
-        like.setPostId(postId);
-        likeRepository.save(like);
+        String userId = authenticatedUserProvider.getUserName();
+        LikeDTO existingLike = likeRepository.getLike(postId, userId);
+        if (existingLike != null) {
+            return;
+        }
 
-        post.setNumberOfLikes(post.getNumberOfLikes()+1);
-        postService.save(post);
+        LikeDTO like = new LikeDTO();
+        like.setUserId(userId);
+        like.setPostId(postId);
+
+        post.setNumberOfLikes(post.getNumberOfLikes() + 1);
+        postRepository.save(post);
+
+        likeRepository.save(like);
     }
 
-
-    public void unLikePost(String postId) throws EntityNotFound {
-        PostDTO post=postService.getPostById(postId);
-
-        if(post==null)
-        {
+    public void unLikePost(String postId) throws Exception {
+        PostDTO post = postService.getPostById(postId);
+        if (post == null) {
             throw new EntityNotFound(messageSource.getMessage("post.notExists"));
         }
 
-        LikeDTO like=likeRepository.getLike(postId,authenticatedUserProvider.getUserName());
+        String userId = authenticatedUserProvider.getUserName();
+        LikeDTO like = likeRepository.getLike(postId, userId);
+
+        if (like == null) {
+            return;
+        }
 
         likeRepository.delete(like);
 
-        post.setNumberOfLikes(post.getNumberOfLikes()-1);
-        postService.save(post);
+        int currentLikes = post.getNumberOfLikes();
+        if (currentLikes > 0) {
+            post.setNumberOfLikes(currentLikes - 1);
+        }
+        postRepository.save(post);
     }
 
-    public PaginationResponse getAllByUser(int pageSize,String lastEvaluatedKey) {
-        String userName=authenticatedUserProvider.getUserName();
+    public PaginationResponse getAllByUser(int pageSize, String lastEvaluatedKey) {
+        String userName = authenticatedUserProvider.getUserName();
+        List<LikeDTO> list = likeRepository.getAllLikesByUserId(userName, lastEvaluatedKey, pageSize);
 
-        Map<String , AttributeValue> startKey=new HashMap<>();
-        if(lastEvaluatedKey!=null)
-        {
-            startKey.put("userId",new AttributeValue().withS(userName));
-            startKey.put("postId",new AttributeValue().withS(lastEvaluatedKey));
-        }
+        boolean hasMore = list.size() == pageSize;
+        lastEvaluatedKey = hasMore ? list.get(list.size() - 1).getPostId() : null;
 
-        List<LikeDTO> list=likeRepository.getAllLikesByUserId(userName,startKey,pageSize);
-
-        boolean hasMore=!(list.size()<pageSize);
-        lastEvaluatedKey=hasMore?list.getLast().getPostId():null;
-
-        return new PaginationResponse(list,lastEvaluatedKey,pageSize,hasMore);
+        return new PaginationResponse(list, lastEvaluatedKey, pageSize, hasMore);
     }
 
-    public PaginationResponse getAllByPostId(String postId,int pageSize,String lastEvaluatedKey) {
-        String userName=authenticatedUserProvider.getUserName();
+    public PaginationResponse getAllByPostId(String postId, int pageSize, String lastEvaluatedKey) {
+        List<LikeDTO> list = likeRepository.getAllLikesByPostId(postId, lastEvaluatedKey, pageSize);
 
-        Map<String , AttributeValue> startKey=new HashMap<>();
+        boolean hasMore = list.size() == pageSize;
+        lastEvaluatedKey = hasMore ? list.get(list.size() - 1).getUserId() : null;
 
-        if(lastEvaluatedKey!=null)
-        {
-            startKey.put("postId",new AttributeValue().withS(postId));
-            startKey.put("userId",new AttributeValue().withS(lastEvaluatedKey));
-        }
+        return new PaginationResponse(list, lastEvaluatedKey, pageSize, hasMore);
+    }
 
-        List<LikeDTO> list=likeRepository.getAllLikesByPostId(postId,startKey,pageSize);
-
-        boolean hasMore=!(list.size()<pageSize);
-        lastEvaluatedKey=hasMore?list.getLast().getUserId():null;
-
-        return new PaginationResponse(list,lastEvaluatedKey,pageSize,hasMore);
+    public void unLikePostByLikeId(String likeId){
+        likeRepository.unlikePostById(likeId);
     }
 }

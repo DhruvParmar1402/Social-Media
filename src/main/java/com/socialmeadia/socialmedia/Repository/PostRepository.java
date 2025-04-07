@@ -40,7 +40,17 @@ public class PostRepository {
         repo.delete(mapper.map(existingPostDTO, PostEntity.class));
     }
 
-    public List<PostDTO> getAll(String userName , Map<String, AttributeValue> startKey, int pageSize, DateRequestDTO dateRequestDTO) {
+    public List<PostDTO> getAll(String userName , String lastEvaluatedKey, int pageSize, DateRequestDTO dateRequestDTO) {
+
+        Map<String, AttributeValue> startKey = null;
+
+        if (lastEvaluatedKey != null && !lastEvaluatedKey.isEmpty()) {
+
+            startKey = new HashMap<>();
+            startKey.put("userName", new AttributeValue().withS(userName));
+            startKey.put("postId", new AttributeValue().withS(lastEvaluatedKey));
+        }
+
         Map<String , AttributeValue> eav=new HashMap<>();
         eav.put(":userName",new AttributeValue().withS(userName));
 

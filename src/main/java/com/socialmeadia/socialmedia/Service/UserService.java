@@ -5,9 +5,9 @@ import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Repository.UserRepository;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class UserService {
@@ -18,10 +18,13 @@ public class UserService {
     @Autowired
     private AuthenticatedUserProvider authenticatedUserProvider;
 
+    @Autowired
+    private PasswordEncoder encoder;
+
     public boolean doesUserExist (String userName)
     {
         UserDTO user=userRepository.findUserByUserName(userName);
-        return user==null?false:true;
+        return user != null;
     }
 
     public UserDTO updateUser(UserDTO userDTO) throws EntityNotFound {
@@ -33,8 +36,8 @@ public class UserService {
         }
 
         userDTO.setUserName(authenticatedUserProvider.getUserName());
-        userDTO.setCreatedAt(new Date());
-
+        userDTO.setCreatedAt(existingUser.getCreatedAt());
+        userDTO.setPassword(encoder.encode(userDTO.getPassword()));
         userRepository.save(userDTO);
 
         return userDTO;
