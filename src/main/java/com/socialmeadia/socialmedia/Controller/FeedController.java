@@ -1,10 +1,9 @@
 package com.socialmeadia.socialmedia.Controller;
 
 import com.socialmeadia.socialmedia.DTO.PostDTO;
-import com.socialmeadia.socialmedia.Service.FeedService;
+import com.socialmeadia.socialmedia.Service.FeedService.FeedService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
-import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

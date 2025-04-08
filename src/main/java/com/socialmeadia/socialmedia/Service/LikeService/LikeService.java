@@ -1,10 +1,11 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.LikeService;
 
 import com.socialmeadia.socialmedia.DTO.LikeDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Repository.LikeRepository;
 import com.socialmeadia.socialmedia.Repository.PostRepository;
+import com.socialmeadia.socialmedia.Service.PostService.PostService;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class LikeService {
+public class LikeService implements LikeServiceInterface {
 
     @Autowired
     private LikeRepository likeRepository;

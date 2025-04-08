@@ -1,10 +1,9 @@
 package com.socialmeadia.socialmedia.Controller;
 
-import com.socialmeadia.socialmedia.Service.FriendService;
+import com.socialmeadia.socialmedia.Service.FriendService.FriendService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
-import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,8 @@
 package com.socialmeadia.socialmedia.Controller;
 
-
 import com.socialmeadia.socialmedia.DTO.CommentDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
-import com.socialmeadia.socialmedia.Service.CommentService;
+import com.socialmeadia.socialmedia.Service.CommentService.CommentService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;

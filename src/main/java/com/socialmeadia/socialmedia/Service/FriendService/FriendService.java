@@ -1,4 +1,4 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.FriendService;
 
 import com.socialmeadia.socialmedia.DTO.FriendDTO;
 import com.socialmeadia.socialmedia.DTO.UserDTO;
@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Service
-public class FriendService {
+public class FriendService implements FriendsServiceInterface{
 
     @Autowired
     private FriendRepository friendRepository;

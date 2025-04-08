@@ -3,7 +3,7 @@ package com.socialmeadia.socialmedia.Controller;
 import com.socialmeadia.socialmedia.DTO.UserDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Exception.UserAlreadyExists;
-import com.socialmeadia.socialmedia.Service.AuthService;
+import com.socialmeadia.socialmedia.Service.AuthService.AuthService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class AuthController {
     private AuthService service;
 
     @Autowired
-    private  MessageSourceImpl messageSource;
+    private MessageSourceImpl messageSource;
 
 
     @PostMapping("/register")

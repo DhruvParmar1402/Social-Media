@@ -1,4 +1,4 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.AuthService;
 
 import com.socialmeadia.socialmedia.DTO.UserDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class AuthService {
+public class AuthService implements AuthServiceInterface{
 
     @Autowired
     private AuthRepository authRepository;

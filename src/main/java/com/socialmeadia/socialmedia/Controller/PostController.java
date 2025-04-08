@@ -4,7 +4,7 @@ import com.socialmeadia.socialmedia.DTO.DateRequestDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Exception.UnAuthorized;
-import com.socialmeadia.socialmedia.Service.PostService;
+import com.socialmeadia.socialmedia.Service.PostService.PostService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;

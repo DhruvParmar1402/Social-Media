@@ -1,8 +1,10 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.FeedService;
 
 import com.socialmeadia.socialmedia.DTO.FriendDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
+import com.socialmeadia.socialmedia.Service.FriendService.FriendService;
+import com.socialmeadia.socialmedia.Service.PostService.PostService;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class FeedService {
+public class FeedService implements FeedServiceInterface{
 
     @Autowired
     private AuthenticatedUserProvider authenticatedUserProvider;

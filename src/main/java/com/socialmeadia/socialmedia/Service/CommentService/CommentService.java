@@ -1,4 +1,4 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.CommentService;
 
 import com.socialmeadia.socialmedia.DTO.CommentDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CommentService {
+public class CommentService implements CommentServiceInterface{
 
     @Autowired
     private CommentRepository commentRepository;

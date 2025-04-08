@@ -1,4 +1,4 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.PostService;
 
 import com.socialmeadia.socialmedia.DTO.DateRequestDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
@@ -7,6 +7,8 @@ import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Exception.UnAuthorized;
 import com.socialmeadia.socialmedia.Repository.PostRepository;
 import com.socialmeadia.socialmedia.Repository.UserRepository;
+import com.socialmeadia.socialmedia.Service.CommentService.CommentService;
+import com.socialmeadia.socialmedia.Service.LikeService.LikeService;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
 import com.socialmeadia.socialmedia.Util.FileStorageService;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
@@ -18,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PostService {
+public class PostService implements PostServiceInterface{
 
     @Autowired
     private PostRepository postRepository;

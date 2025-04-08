@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@DynamoDBTable(tableName = "Request")
+@DynamoDBTable(tableName = "request")
 public class RequestEntity {
 
     @DynamoDBHashKey(attributeName = "sentTo")

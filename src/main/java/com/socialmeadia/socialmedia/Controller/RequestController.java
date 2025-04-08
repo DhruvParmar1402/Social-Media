@@ -4,7 +4,7 @@ package com.socialmeadia.socialmedia.Controller;
 import com.socialmeadia.socialmedia.DTO.RequestDTO;
 import com.socialmeadia.socialmedia.Exception.AlreadyFriend;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
-import com.socialmeadia.socialmedia.Service.RequestService;
+import com.socialmeadia.socialmedia.Service.RequestService.RequestService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;

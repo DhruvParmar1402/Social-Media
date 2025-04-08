@@ -1,10 +1,11 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.RequestService;
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.socialmeadia.socialmedia.DTO.RequestDTO;
 import com.socialmeadia.socialmedia.Exception.AlreadyFriend;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Repository.RequestRepository;
+import com.socialmeadia.socialmedia.Service.FriendService.FriendService;
+import com.socialmeadia.socialmedia.Service.UserService.UserService;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RequestService {
+public class RequestService implements RequestServiceInterface {
 
     @Autowired
     private RequestRepository requestRepository;
@@ -56,7 +57,6 @@ public class RequestService {
     public PaginationResponse getAll(int pageSize, String lastEvaluatedKey) {
         String userName=authenticatedUserProvider.getUserName();
 
-        
         List<RequestDTO> list=requestRepository.getAll(userName,lastEvaluatedKey,pageSize);
 
         boolean hasMore=!(list.size()<pageSize);

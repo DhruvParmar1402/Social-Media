@@ -1,4 +1,4 @@
-package com.socialmeadia.socialmedia.Service;
+package com.socialmeadia.socialmedia.Service.UserService;
 
 import com.socialmeadia.socialmedia.DTO.UserDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements UserServiceInterface{
 
     @Autowired
     private UserRepository userRepository;

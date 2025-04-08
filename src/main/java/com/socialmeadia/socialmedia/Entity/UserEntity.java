@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 
-@DynamoDBTable(tableName = "User")
+@DynamoDBTable(tableName = "user")
 public class UserEntity {
 
     @DynamoDBHashKey(attributeName = "userName")
