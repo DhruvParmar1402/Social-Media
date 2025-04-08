@@ -1,5 +1,6 @@
 package com.socialmeadia.socialmedia.Service.FeedService;
 
+import com.socialmeadia.socialmedia.DTO.DateRequestDTO;
 import com.socialmeadia.socialmedia.DTO.FriendDTO;
 import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.Exception.EntityNotFound;
@@ -26,8 +27,7 @@ public class FeedService implements FeedServiceInterface{
     @Autowired
     private PostService postService;
 
-    public List<PostDTO> getAllFeeds() throws EntityNotFound {
-        String lastEvaluatedKey = null;
+    public List<PostDTO> getAllFeeds(DateRequestDTO date,int pageSize,String lastEvaluatedKey) throws EntityNotFound {
         List<FriendDTO> friends = new ArrayList<>();
 
         do {
@@ -53,7 +53,7 @@ public class FeedService implements FeedServiceInterface{
             lastEvaluatedKey = null;
 
             do {
-                PaginationResponse response = postService.getAll(5, lastEvaluatedKey, null, friendUserName);
+                PaginationResponse response = postService.getAll(5, lastEvaluatedKey, date, friendUserName);
                 List<PostDTO> list = (List<PostDTO>) response.getData();
 
                 if (list == null || list.isEmpty()) {
