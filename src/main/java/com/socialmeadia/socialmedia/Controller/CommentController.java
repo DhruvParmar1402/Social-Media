@@ -8,6 +8,7 @@ import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/comment")
 public class CommentController {
 
-    private final CommentService commentService;
-    private final MessageSourceImpl messageSource;
+    @Autowired
+    private CommentService commentService;
 
-    public CommentController(CommentService commentService, MessageSourceImpl messageSource) {
-        this.commentService = commentService;
-        this.messageSource = messageSource;
-    }
+    @Autowired
+    private MessageSourceImpl messageSource;
 
 
     @PostMapping

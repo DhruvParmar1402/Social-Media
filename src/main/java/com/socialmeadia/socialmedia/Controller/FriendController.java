@@ -4,6 +4,7 @@ import com.socialmeadia.socialmedia.Service.FriendService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
+import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/friends")
 public class FriendController {
 
-    private final MessageSourceImpl messageSource;
-    private final FriendService friendService;
+    @Autowired
+    private MessageSourceImpl messageSource;
 
-    public FriendController(MessageSourceImpl messageSource, FriendService friendService) {
-        this.messageSource = messageSource;
-        this.friendService = friendService;
-    }
+    @Autowired
+    private FriendService friendService;
+
 
     @GetMapping
     public ResponseEntity<?> getAll(@RequestParam(defaultValue = "5") int pageSize, @RequestParam(required = false) String lastEvaluatedKey)

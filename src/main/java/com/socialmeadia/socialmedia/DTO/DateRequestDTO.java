@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+
 public class DateRequestDTO {
     private String startDate;
     private String endDate;

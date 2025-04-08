@@ -19,13 +19,11 @@ import java.util.Map;
 @Repository
 public class PostRepository {
 
-    private ModelMapper mapper=new ModelMapper();
-
     @Autowired
     private DynamoDBMapper repo;
 
-    @Autowired
-    private AmazonDynamoDB amazonDynamoDB;
+    private ModelMapper mapper=new ModelMapper();
+
 
     public void save(PostDTO post) {
         repo.save(mapper.map(post, PostEntity.class));

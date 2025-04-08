@@ -4,6 +4,8 @@ import com.socialmeadia.socialmedia.DTO.PostDTO;
 import com.socialmeadia.socialmedia.Service.FeedService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
+import lombok.experimental.Accessors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,13 +18,11 @@ import java.util.List;
 @RequestMapping("/feed")
 public class FeedController {
 
-    private final FeedService feedService;
-    private final MessageSourceImpl messageSource;
+    @Autowired
+    private FeedService feedService;
 
-    public FeedController(FeedService feedService, MessageSourceImpl messageSource) {
-        this.feedService = feedService;
-        this.messageSource = messageSource;
-    }
+    @Autowired
+    private MessageSourceImpl messageSource;
 
     @GetMapping
     public ResponseEntity<?> getFeed() {

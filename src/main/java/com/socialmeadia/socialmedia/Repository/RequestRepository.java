@@ -15,6 +15,7 @@ import java.util.Map;
 
 @Repository
 public class RequestRepository {
+
     @Autowired
     private DynamoDBMapper repo;
 

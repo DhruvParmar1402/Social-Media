@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 
-@DynamoDBTable(tableName = "post")
+@DynamoDBTable(tableName = "Post")
 public class PostEntity {
 
     @DynamoDBHashKey(attributeName = "postId")

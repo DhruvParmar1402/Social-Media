@@ -6,6 +6,7 @@ import com.socialmeadia.socialmedia.Exception.UserAlreadyExists;
 import com.socialmeadia.socialmedia.Service.AuthService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,13 +20,11 @@ import com.socialmeadia.socialmedia.Groups.UserValidations;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService service;
-    private final MessageSourceImpl messageSource;
+    @Autowired
+    private AuthService service;
 
-    public AuthController(AuthService service, MessageSourceImpl messageSource) {
-        this.service = service;
-        this.messageSource = messageSource;
-    }
+    @Autowired
+    private  MessageSourceImpl messageSource;
 
 
     @PostMapping("/register")

@@ -5,7 +5,6 @@ import com.socialmeadia.socialmedia.Exception.EntityNotFound;
 import com.socialmeadia.socialmedia.Repository.UserRepository;
 import com.socialmeadia.socialmedia.Util.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

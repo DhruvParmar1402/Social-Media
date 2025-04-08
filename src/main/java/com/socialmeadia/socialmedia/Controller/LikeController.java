@@ -5,6 +5,8 @@ import com.socialmeadia.socialmedia.Service.LikeService;
 import com.socialmeadia.socialmedia.Util.MessageSourceImpl;
 import com.socialmeadia.socialmedia.Util.PaginationResponse;
 import com.socialmeadia.socialmedia.Util.ResponseHandler;
+import lombok.experimental.Accessors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/like")
 public class LikeController {
 
-    private final LikeService likeService;
-    private final MessageSourceImpl messageSource;
+    @Autowired
+    private LikeService likeService;
 
-    public LikeController(LikeService likeService, MessageSourceImpl messageSource) {
-        this.likeService = likeService;
-        this.messageSource = messageSource;
-    }
+    @Autowired
+    private MessageSourceImpl messageSource;
+
 
     @PostMapping("/{postId}")
     public ResponseEntity<?> addLike(@PathVariable String postId)

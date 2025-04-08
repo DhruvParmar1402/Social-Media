@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 
-@DynamoDBTable(tableName = "comment")
+@DynamoDBTable(tableName = "Comment")
 public class CommentEntity {
 
     @DynamoDBAttribute(attributeName = "postId")
