@@ -78,4 +78,17 @@ public class RequestService {
         requestRepository.delete(request);
         friendService.add(userName,sendBy);
     }
+
+    public void rejectRequest(String sendBy) throws EntityNotFound {
+        String userName=authenticatedUserProvider.getUserName();
+
+        RequestDTO request=requestRepository.findRequest(sendBy,userName);
+
+        if (request==null)
+        {
+            throw new EntityNotFound(messageSource.getMessage("request.notFound"));
+        }
+
+        requestRepository.delete(request);
+    }
 }

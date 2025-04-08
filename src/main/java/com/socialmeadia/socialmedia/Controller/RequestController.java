@@ -86,4 +86,17 @@ public class RequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+    @DeleteMapping("/reject/{sendBy}")
+    public ResponseEntity<?> rejectRequest(@PathVariable String sendBy) {
+        ResponseHandler<?> response;
+        try {
+            requestService.rejectRequest(sendBy);
+            response = new ResponseHandler<>(null, messageSource.getMessage("request.rejected.successfully"), HttpStatus.OK, true);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response = new ResponseHandler<>(null, e.getMessage(), HttpStatus.BAD_REQUEST, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }
