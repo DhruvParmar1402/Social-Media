@@ -109,9 +109,9 @@ public class LikeRepository {
     public void unlikePostById(String postId) {
 
         List<LikeEntity> likes = getAllByPostId(postId);
-
-        for (LikeEntity like : likes) {
-            repo.delete(like);
+        if(!likes.isEmpty())
+        {
+            repo.batchDelete(likes);
         }
     }
 }

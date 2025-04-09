@@ -115,10 +115,9 @@ public class CommentRepository {
 
         List<CommentEntity> comments=repo.query(CommentEntity.class,expression);
 
-
-        for (CommentEntity comment:comments)
+        if(!comments.isEmpty())
         {
-            repo.delete(comment);
+            repo.batchDelete(comments);
         }
     }
 }

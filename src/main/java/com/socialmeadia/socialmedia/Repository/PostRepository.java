@@ -1,6 +1,6 @@
 package com.socialmeadia.socialmedia.Repository;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
